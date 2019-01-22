@@ -1,0 +1,409 @@
+/*********************************************************************************************************************************/
+/*The following codes are for paper "Childhood psychosocial challenges and risk for obesity in U.S. men and women", M. M. Wall etc */
+
+/* at Translational Psychiatry */
+
+/**********************************************************************************************************************************/
+
+
+/*******************************************************************************************************************************/
+/* This file is for data preprocessing, and another file (Childhood psychosocial challenges and risk for obesity in U.S. men   */
+/* and women figure and tables.sas) is for figure and tables in the paper                                                       */
+/*******************************************************************************************************************************/
+
+
+/*******************************************************************************************************************************/
+/*                                                                                                                             */   
+/*  DATA PREPROCESSING  FOR "Childhood psychosocial challenges and risk for obesity in U.S. men and women"                     */
+/*                                                                                                                             */
+/*******************************************************************************************************************************/
+
+
+
+
+libname nesarc1 "XXXXXXXXXXXXXXXXXX";
+
+/*get local copy of data*/
+data test1;
+set nesarc1.final_inhouse_102015 (read =XXXXXX);
+run;
+
+/*******************************************************************************************************************************/
+/*Preliminary data preprocessing ***********************************************************************************************/
+/*******************************************************************************************************************************/
+
+DATA mydata_bmi(KEEP=
+CASEID/* the ids*/
+ nregion/*cessus region, 1-northeast 2 midwest 3 south 4 west, no missing value*/
+ NETHRACE/*race, 1 white 2 black 3 native 4 asian 5 hispanic, no missing*/ 
+ NAGE/* age, no missing, 18-89 and 90+ as 90*/
+ NEDUC/*year of school, 1-7, <HS, 8 HS,9 HS equivalent,10 some college, 11 associate 12 BS 13 some graduate 14 Master and more no missing*/ 
+ NFEET/*height:feet, 2-7 feet, 9 unknown*/
+ NINCHES/*height:inches, 0-11 inches, 99 unknown*/
+ NPOUNDS/*weight:pounds, 57-550 pounds, 999 unknown*/
+ N1Q42A/*before 13 overweight, 1 yes, 2 no, 9 unknown*/
+ N1Q42C/*AGE WHEN FIRST REACH THAT WEIGHT, 10-89, 90, 99 unknown*/
+ VARSTRAT/*Stratum*/
+ VARUNIT/*PSU*/ 
+ AUDWEIGHT/*AUDADIS full-sample weight*/ 
+ NSEX/*sex, 1 male 2 female, no missing*/
+ N1Q11A/*number of children, 0-50, 99 unknwon*/
+ N1Q11B/*age of first children, 10-65 age, 99 unknown, BL NA*/
+ N14Q19A/*pregnant at this time, 1-yes, 2-no, 9 unknown, BL NA*/
+ N14Q19B/*pregnant last year, 1-yes, 2-no, 9 unknown, BL NA*/
+ N1Q21A/*received goverment money before 18, 1 yes, 2 no, 9 unknown*/
+
+ NALPARNT	/*Either natural father or mother ever been an alcoholic*/
+ NALADPARN	/*Either adoptive parent ever been an alcoholic*/
+ NDRGPARNT	/*Either natural father or mother ever had drug problems*/
+ NDEPPARNT	 /*	Either natural father or mother ever been depressed*/
+ NBHPPARNT		/*Either natural father or mother ever had behavior problems*/
+ NANXPARNT	/*Either natural father or mother ever had anxious problems*/
+ PARMEND /*parent mental disorder*/
+ PARSUBD /* parent drug use disorder*/
+
+ N1Q8F /*STEPPARENT DIE BEFORE 18, 1 yes 2 no 9 unknown, BL NA*/
+ N1Q8H /*BIOLOGICAL OR ADOPTIVE PARENT DIE BEFORE 18 1 yes 2 no 9 unknown, BL NA*/
+ N1Q8A /*BIOLOGICAL OR ADOPTIVE PARENTS GET DIVORCED before 18, 1 yes 2 no 9 unknown, BL NA*/
+ 
+ N1Q2B /*Born in USA, 1-yes, 2no*/
+
+ /*the following variable are all for age at onset of first episode*/
+ N4AQ6A /*mde*/
+ N4BQ5 /* Low mood II (dysthymia)*/
+ N5Q8A /*High mood (manic episode) */
+ N6Q12A  /*Anxiety (panic disorder) */ 
+ N6AQ8A /* Specific anxiety (agoraphobia)*/
+ N7Q16 /* Social situations (social anxiety) */
+ N8Q14A /*  Specific situations (specific phobia) */
+ N9Q6A/*gad*/
+ N12Q9/*  Traumatic experiences (PTSD)*/
+ N2BQ2D /*alcohol*/
+ N3AQ10D /*TOBACCO AND NICOTINE USE*/ 
+ N3CD1Q2B /*SEDATIVE/TRANQUILIZER USE DISORDER */
+ N3CD2Q2B /*PAINKILLER USE DISORDER  */
+ N3CD3Q2B /*MARIJUANA USE DISORDER */
+ N3CD4Q2B /*COCAINE USE DISORDER */
+ N3CD5Q2B /*AGE AT ONSET OF STIMULANT USE DISORDER */
+ N3CD6Q2B /*AGE AT ONSET OF CLUB DRUG USE DISORDER */
+ N3CD7Q2B /*AGE AT ONSET OF HALLUCINOGEN USE DISORDER */
+ N3CD8Q2B /*AGE AT ONSET OF INHALANT USE DISORDER */
+ N3CD9Q2B /*AGE AT ONSET OF HEROIN USE DISORDER */
+ N3CD10Q2B /*AGE AT ONSET OF OTHER DRUG USE DISORDER */
+
+
+
+
+ /*The following variables are for childhood maltreatment*/
+/*Physical neglect*/
+ N13Q1A/*MADE TO DO CHORES THAT WERE TOO DIFFICULT 1 never, 2-5 almost nevwe to very often, 9 unknown*/
+ N13Q1B/*LEFT ALONE before 10, 1 never, 2-5 almost nevwe to very often, 9 unknown*/
+ N13Q1C/*GO WITHOUT THINGS 1 never, 2-5 almost nevwe to very often, 9 unknown*/
+ N13Q1D/*ADULT LIVING IN YOUR HOME MAKE YOU GO HUNGRY*/
+ N13Q1E/*ADULT LIVING IN YOUR HOME IGNORE OR FAIL TO GET YOU MEDICAL TREATMENT */ 
+/*verbal abuse*/
+ N13Q1G/*ADULT LIVING IN YOUR HOME THREATEN TO HIT OR THROW SOMETHING AT YOU BUT DIDN'T DO IT*/
+ N13Q1H/*ADULT LIVING IN YOUR HOME ACT IN ANY OTHER WAY THAT MADE YOU AFRAID YOU WOULD BE PHYSICALLY HURT*/
+  /*physical abuse*/
+ N13Q1I/*ADULT LIVING IN YOUR HOME PUSH, GRAB, SHOVE, SLAP OR HIT YOU */
+ N13Q1J/*ADULT LIVING IN YOUR HOME HIT YOU SO HARD THAT YOU HAD MARKS OR BRUISES OR WERE INJURED*/
+/*sex abuse*/
+ N13Q2A/*PERSON TOUCH OR FONDLE YOU IN A SEXUAL WAY WHEN YOU DIDN'T WANT THEM TO */
+ N13Q2B/*PERSON HAVE YOU TOUCH THEIR BODY IN A SEXUAL WAY WHEN YOU DIDN’T WANT TO*/
+ N13Q2C/*PERSON ATTEMPT TO HAVE SEXUAL INTERCOURSE WITH YOU WHEN YOU DIDN’T WANT THEM TO*/
+ N13Q2D/*PERSON ACTUALLY HAVE SEXUAL INTERCOURSE WITH YOU WHEN YOU DIDN’T WANT THEM TO*/
+/*Emotional neglect*/ 
+ N13Q3A/*BEFORE AGE 18, FELT THERE WAS SOMEONE IN FAMILY WHO WANTED ME TO BE A SUCCESS 1 never true, 2-5 rarely true to very often true, 9 unknown*/
+ N13Q3B/*BEFORE AGE 18, FELT THERE WAS SOMEONE IN FAMILY WHO HELPED ME FEEL I WAS IMPORTANT OR SPECIAL*/
+ N13Q3C/*BEFORE AGE 18, MY FAMILY WAS A SOURCE OF STRENGTH AND SUPPORT */
+ N13Q3D/*BEFORE AGE 18, FELT I WAS PART OF A CLOSE-KNIT FAMILY */
+ N13Q3E/*BEFORE AGE 18, SOMEONE IN MY FAMILY BELIEVED IN ME */ 
+idnum 
+N1Q30A /*(Physical functioning)	*/
+N1Q32A /*(Role limitations)	*/
+N1Q31A /*(Role limitations)	*/
+N1Q31B /*(Role limitations)	*/
+N1Q34 /*(Social functioning)*/	
+N1Q35 /*(Pain)	*/
+N1Q33C /*(Mental health)	*/
+N1Q33B /*(Vitality)	*/
+
+age1 edu1 bmi overweight edu2 bmi1 edu3 earlykid
+
+pyaud5 /*DSM-5 Alcohol Use Disorder without Withdrawal Clustering past year*/
+lifeaud5 /*DSM-5 Alcohol Use Disorder without Withdrawal Clustering lifetime*/
+pyaud5sev /*DSM-5 Alcohol Use Disorder Severity without Withdrawal Clustering past year*/
+nicdep5 /*DSM-5 Nicotine Use Disorder without Withdrawal Clustering past year*/
+lnicdep5 /*DSM-5 Nicotine Use Disorder without Withdrawal Clustering lifetime*/
+nicdep5sev /* DSM-5 Nicotine Use Disorder Severity without Withdrawal Clustering past year*/
+sedud5/*DSM-5 Sedative/Tranquilizer Use Disorder without Withdrawal Clustering past year*/
+lsedud5/*DSM-5 Sedative/Tranquilizer Use Disorder without Withdrawal Clustering lifetime*/
+opud5 /* DSM-5 Opioid Use Disorder without Withdrawal Clustering past year*/
+lopud5 /* DSM-5 Opioid Use Disorder without Withdrawal Clustering lifetime*/
+maud5 /* DSM-5 Marijuana Use Disorder without Withdrawal Clustering past year*/
+lmaud5 /* DSM-5 Marijuana Use Disorder without Withdrawal Clustering lifetime*/
+cocud5 /* DSM-5 Cocaine Use Disorder without Withdrawal Clustering past year*/
+lcocud5 /* DSM-5 Cocaine Use Disorder without Withdrawal Clustering lifetime*/
+stiud5 /* DSM-5 Stimulant Use Disorder without Withdrawal Clustering past year*/
+lstiud5 /* DSM-5 Stimulant Use Disorder without Withdrawal Clustering lifetime*/
+clbud5 /* DSM-5 Club Drug Use Disorder  past year*/
+lclbud5 /*DSM-5 Club Drug Use Disorder  lifetime*/
+halud5/* DSM-5 Hallucinogen Use Disorder past year*/
+lhalud5 /* DSM-5 Hallucinogen Use Disorder  lifetime*/
+solud5 /*DSM-5 Inhalants/Solvents Use Disorder past year*/
+lsolud5/*DSM-5 Inhalants/Solvents Use Disorder lifetime*/
+herud5/*DSM-5 Heroin Use Disorder without Withdrawal Clustering past year*/
+lherud5/*DSM-5 Heroin Use Disorder without Withdrawal Clustering lifetime*/
+othud5/*DSM-5 Other Drug Use Disorder past year*/
+lothud5/*DSM-5 Other Drug Use Disorder lifetime*/
+allopud5/* DSM-5 Opioid Use Disorder (Opioids + Heroin) past year*/
+lallopud5/*DSM-5 Opioid Use Disorder (Opioids + Heroin) lifetime*/
+allstiud5/*DSM-5 Stimulant Use Disorder (Stimulants + Cocaine) past year*/
+lallstiud5/*DSM-5 Stimulant Use Disorder (Stimulants + Cocaine) lifetime*/
+allhalud5/*DSM-5 Hallucinogen Use Disorder (Hallucinogens + Club Drugs) past year*/
+lallhalud5/*DSM-5 Hallucinogen Use Disorder (Hallucinogens + Club Drugs) lifetime*/
+pymdepind /*Past year DSM-5 major depressive episode (nonhiercharical) */
+ppymdepind /*Prior to past year DSM-5 major depressive episode (nonhiercharical) */
+lmdepind /*Lifetime DSM-5 major depressive episode (nonhiercharical)*/ 
+pymddisorder/* Past year DSM-5 major depressive disorder (hierarchical)*/ 
+lmddisorder /*Lifetime DSM-5 major depressive disorder (hierarchical)*/
+lmddisorder /*Lifetime DSM-5 major depressive disorder (hierarchical)a*/ 
+pydysind /*Past year DSM-5 dysthymia (nonhierarchical) */
+ppydysind /*Prior to past year DSM-5 dysthymia (nonhierarchical) */
+ldysind /*Lifetime DSM-5 dysthymia (nonhierarchical) */
+pydysthymia/* Past year DSM-5 dysthymia (hierarchical)a */
+ldysthymia/* Lifetime DSM-5 dysthymia (hierarchical)a */
+pymanicind/* Past year DSM-5 manic episode (nonhierarchical) */
+ppymanicind /*Prior to past year DSM-5 manic episode (nonhierarchical) */
+lmanicind /*Lifetime DSM-5 manic episode (nonhierarchical) */
+pyhypoind /*Past year DSM-5 hypomanic episode (nonhierarchical) */
+ppyhypoind/* Prior to past year DSM-5 hypomanic episode (nonhierarchical) */
+lhypoind/* Lifetime DSM-5 hypomanic episode (nonhierarchical) */
+pybipolar1/* Past year DSM-5 bipolar 1 disorder (hierarchical)a */
+bipolar1/* Lifetime DSM-5 bipolar 1 disorder (hierarchical)a */
+pyspeind/* Past year DSM-5 specific phobia */
+ppyspeind/* Prior to past year DSM-5 specific phobia */
+lspeind /*Lifetime DSM-5 specific phobia */
+pysocind /*Past year DSM-5 social phobia */
+ppysocind/* Prior to past year DSM-5 social phobia */
+lsocind/* Lifetime DSM-5 social phobia */
+pypanicind/* Past year DSM-5 panic disorder */
+ppypanicind/* Prior to past year DSM-5 panic disorder */
+lpanicind/* Lifetime DSM-5 panic disorder */
+pyagoraind/* Past year DSM-5 agoraphobia */
+ppyagoraind/* Prior to past year DSM-5 agoraphobia */
+lagoraind/* Lifetime DSM-5 agoraphobia */
+pygadind/* Past year DSM-5 generalized anxiety disorder */
+ppygadind/* Prior to past year DSM-5 generalized anxiety disorder */
+lgadind/* Lifetime DSM-5 generalized anxiety disorder */
+pyptsd/* Past year DSM-5 posttraumatic stress disorder */
+ppyptsd/* Prior to past year DSM-5 posttraumatic stress disorder */
+lptsd /*Lifetime DSM-5 posttraumatic stress disorder */
+anndx /*Past year DSM-5 anorexia nervosa */
+panndx/* Prior to past year DSM-5 anorexia nervosa */
+lanndx/* Lifetime DSM-5 anorexia nervosa */
+bulnerdx/* Past year DSM-5 bulimia nervosa */
+pbulnerdx/* Prior to past year DSM-5 bulimia nervosa */
+lbulnerdx/* Lifetime DSM-5 bulimia nervosa */
+beddx/* Past year DSM-5 binge-eating disorder */
+pbeddx/* Prior to past year DSM-5 binge-eating disorder */
+lbeddx/* Lifetime DSM-5 binge-eating disorder */
+spddx1/* DSM-5 schizotypal personality disorder (at least 1 criterion soc/occ)b */
+spddx2/* DSM-5 schizotypal personality disorder (at least 2 criteria soc/occ)b */
+bpddx1/* DSM-5 borderline personality disorder (at least 1 criterion soc/occ)b */
+bpddx2/* DSM-5 borderline personality disorder (at least 2 criteria soc/occ)b */
+conduct /*DSM-5 conduct disroder without soc/occb */
+conductso/* DSM-5 conduct disroder with soc/occ b */
+antisoc/* DSM-5 antisocial personality disorder b */
+antisocso/* DSM-5 antisocial personality disorder with soc/occb */
+
+
+drugud5 /*delf defined, if any drug disorder past 12 months*/
+lifedrugud5 /*self difined, if any drug disorder life time*/
+drugdate/*self defined, if any drug disordrer date happended before 18*/
+/*all the following variables are for age before 18*/
+mdd18 manic18 panic18 agor18 social18 specialphobia18 gad18 ptsd18 alcohol18 nicotine18 drug18 anxiety18
+); 
+set test1;
+
+/*define parent mental disorder*/
+
+if NDEPPARNT =1 or NBHPPARNT=1 or NANXPARNT=1 then PARMEND=1; else PARMEND=0;
+/*define parent substance use  disorder*/
+if NALPARNT =1 or NALADPARN=1 or NDRGPARNT	=1 then PARSUBD =1; else PARSUBD =0;
+
+ /*define drug use disorder*/
+ if sedud5 =1 or opud5 =1 or maud5 =1 or cocud5 =1 or stiud5 =1 or clbud5 =1 or halud5 =1 
+ or solud5=1 or herud5=1 or othud5 =1 then drugud5 =1; else drugud5 =0;
+if lsedud5 =1 or lopud5 =1 or lmaud5 =1 or lcocud5 =1 or lstiud5 =1 or lclbud5 =1 or lhalud5 =1 
+ or lsolud5=1 or lherud5=1 or lothud5 =1 then lifedrugud5 =1; else lifedrugud5 =0;
+
+if(N3CD1Q2B >0 and N3CD1Q2B <18) or (N3CD2Q2B >0 and N3CD2Q2B <18) or (N3CD3Q2B >0 and N3CD3Q2B <18) 
+or (N3CD4Q2B >0 and N3CD4Q2B <18) or (N3CD5Q2B >0 and N3CD5Q2B <18) or  (N3CD6Q2B >0 and N3CD6Q2B <18) 
+or (N3CD7Q2B >0 and N3CD7Q2B <18)  or (N3CD8Q2B >0 and N3CD8Q2B <18) or (N3CD9Q2B >0 and N3CD9Q2B <18) 
+or (N3CD10Q2B >0 and N3CD10Q2B <18) then drogdate =1; else drugdate =0;
+/*the following code is for any disorder before 18*/
+
+%MACRO NEW1(VAR1= ,VAR2= ,NVAR= );
+IF &VAR1=1 and &VAR2>0 and &VAR2<18 THEN &NVAR=1; ELSE &NVAR=0;
+%MEND; 
+%NEW1(var1=lmddisorder,var2=N4AQ6A,nvar=mdd18);
+%NEW1(VAR1=ldysthymia  ,VAR2=N4BQ5  ,NVAR=dys18 );
+%NEW1(VAR1=lmanicind  ,VAR2=N5Q8A  ,NVAR=manic18 );
+%NEW1(VAR1=lpanicind ,VAR2=N6Q12A   ,NVAR=panic18 );
+%NEW1(VAR1= lagoraind,VAR2=N6AQ8A  ,NVAR=agor18 );
+%NEW1(VAR1= lsocind ,VAR2=N7Q16  ,NVAR=social18 );
+%NEW1(VAR1=lspeind  ,VAR2=N8Q14A  ,NVAR=specialphobia18 );
+%NEW1(VAR1=lgadind ,VAR2=N9Q6A ,NVAR=gad18 );
+%NEW1(VAR1=lptsd  ,VAR2=N12Q9 ,NVAR=ptsd18 );
+%NEW1(VAR1=lifeaud5 ,VAR2=N2BQ2D,NVAR=alcohol18 );
+%NEW1(VAR1=lnicdep5 ,VAR2=N3AQ10D  ,NVAR=nicotine18 );
+%NEW1(VAR1=lsedud5 ,VAR2=N3CD1Q2B  ,NVAR=sed18 );
+%NEW1(VAR1=lmaud5  ,VAR2=N3CD3Q2B  ,NVAR=mari18 );
+%NEW1(VAR1= lcocud5 ,VAR2=N3CD4Q2B  ,NVAR=coc18 );
+%NEW1(VAR1= lstiud5 ,VAR2=N3CD5Q2B  ,NVAR=sti18 );
+%NEW1(VAR1=lclbud5  ,VAR2=N3CD6Q2B  ,NVAR=clb18 );
+%NEW1(VAR1=lhalud5  ,VAR2=N3CD7Q2B  ,NVAR=hal18 );
+%NEW1(VAR1=lsolud5 ,VAR2=N3CD8Q2B  ,NVAR=sol18 );
+%NEW1(VAR1=lherud5 ,VAR2=N3CD9Q2B  ,NVAR=her18 );
+%NEW1(VAR1=lothud5 ,VAR2=N3CD10Q2B  ,NVAR=oth18 );
+
+ if sed18 =1  or mari18 =1 or coc18 =1 or sti18 =1 or clb18 =1 or hal18 =1 
+ or sol18=1 or her18=1 or oth18 =1 then drug18 =1; else drug18 =0;
+
+if panic18 = 1 or agor18 = 1 or social18 = 1 or specialphobia18 = 1 or gad18 = 1 then anxiety18 = 1; else anxiety18 = 0;
+
+
+/*the following 3 lines of code remove subjects with missing weight or height*/
+ if npounds eq . then delete;
+ if nfeet eq 9 then delete;
+ if ninches eq 99 then delete;
+ /*the following if sentence divides the original age into 4 group, 18-34,35-49,50-64 and 65+
+ later, 65+ will be excluded*/
+ if nage <35 then age1 =1;
+ else if nage < 50 then age1=2;
+ else if nage < 65 then age1=3;
+ else age1 =4;
+ /*the following if sentence divides the original education year into 4 sentence, <HS, HS, some college and college or more*/
+ if neduc < 8 then edu1 =1;
+ else if neduc < 10 then edu1 =2;
+ else if neduc < 12 then edu1 =3;
+ else edu1=4;
+ /*claculation of bmi*/
+ bmi = npounds*0.45/((12*nfeet+ninches)*0.025)**2;
+ if bmi <= 25 then overweight =0;
+ else overweight =1;
+ /*divide the subjects into the following group based on bmi:underweight,normal,pre-obese,obese, and severe obese*/
+ if bmi  <18.5 then bmi1=1;
+ else if bmi <25 then bmi1=2;
+ else if bmi < 30 then bmi1=3;
+ else if bmi < 40 then bmi1 = 4;
+ else bmi1 =5;
+ /*childhood economical status*/
+ if N1Q42A = 9 then N1Q42A =.;
+ /*two type of educaton year, <HS or HS and more*/
+ if neduc <8 then edu2 =1;
+ else edu2 =2;
+ /*two type of education year, <BS and BS or more*/
+ if neduc >=12 then edu3 =2;
+ else edu3 =1;
+ if N1Q11A = 99 then earlykid = .;  /*with early kid (<=19)*/
+ else if N1Q11A = 0 then earlykid = 0;
+ else if N1Q11B = 99 then earlykid = .;
+ else if N1Q11B >= 18 then earlykid = 0;
+ else earlykid =1;
+ if N1Q21A  = 9 then N1Q21A = .; /*kid economic status*/
+ if n1q2b =9 then n1q2b =.;
+
+
+
+
+
+RUN;
+
+
+
+
+/*removal woman with pregnant, N14Q19A (current year pregnant), N14Q19B (last year pregnant*/
+data mydata_bmi2;
+set mydata_bmi;
+ if (N14Q19A eq 1) or (N14Q19B eq 1) then delete/*woman with pregnancy*/;
+run;
+
+
+
+/* remove subject above 65*/
+data mydata_bmi2_ex65;
+set mydata_bmi2;
+ if nage >=65 then delete;
+run;
+
+/*remove subject with very low bmi (bmi<12) or very low height (2 or 3 feet*/
+data mydata_bmi3;
+set mydata_bmi2_ex65;
+if bmi <12 then delete;
+if nfeet =2 or nfeet =3 then delete;
+run;
+
+/*the following code is for final_inhouse_102015 (big data set). it uses . instead of 9 in publicfinal_102015.*/
+
+%macro var(var1, var2);
+		    if &var1^=. then &var2=&var1; else &var2=100;
+		%mend var;
+/*the following code is for 
+ /* %macro var(var1, var2);
+		    if &var1^=9 then &var2=&var1; else &var2=100;
+		%mend var;*/ 
+data mydata_bmi4;
+set mydata_bmi3;
+		/*Physical neglect*/
+		%var(N13Q1A, chpn1);
+		%var(N13Q1B, chpn2);
+		%var(N13Q1C, chpn3);
+		%var(N13Q1D, chpn4);
+		%var(N13Q1E, chpn5);
+	    chpntotal = chpn1 + chpn2 + chpn3 + chpn4 + chpn5;
+		if mod(chpntotal,100)>10 then CHPN=1; 
+		else if (chpntotal <100) then CHPN=2;
+		else CHPN =.;
+		/*Verbal abuse*/
+		if N13Q1G  in (3,4,5) or N13Q1H  in (3,4,5) then CHVB=1; 
+        else if N13Q1G  in (1,2) and N13Q1H  in (1,2) then CHVB=2;
+		else CHVB =.;
+		/*Physical abuse*/
+		if N13Q1I  in (4,5) or N13Q1J in (3,4,5) then CHPA=1; 
+		else if N13Q1I  in (1,2,3) or N13Q1J in (1,2) then CHPA=2;
+		else CHPA =.;
+		/*Sexual abuse*/
+		if N13Q2A  in (2,3,4,5) or N13Q2B in (2,3,4,5) or N13Q2C in (2,3,4,5) or N13Q2D in (2,3,4,5) then CHSA=1; 
+		else if N13Q2A  in (1) and N13Q2B in (1) and N13Q2C in (1) and N13Q2D in (1 )then CHSA=2;
+		else CHSA =.;
+		/*Emotional neglect*/
+		%var(N13Q3A, chen1);
+		%var(N13Q3B, chen2);
+		%var(N13Q3C, chen3);
+		%var(N13Q3D, chen4);
+		%var(N13Q3E, chen5);
+		chentotal = chen1 + chen2 + chen3 + chen4 + chen5;
+		if chentotal<15 then CHEN=1; 
+		else if mod(chentotal,100) >= 15 then CHEN=2;
+		else CHEN =.;
+/*Physical neglect/abuse*/
+if CHPN=1 or CHPA=1 then CHPNA=1; else
+if CHPN=2 and CHPA=2 then CHPNA=2;
+/*Verbal abuse/emotional neglect*/
+if CHVB=1 or CHEN=1 then CHVAEN=1; else
+if CHVB=2 and CHEN=2 then CHVAEN=2;
+
+run;
+
+
+data nesarc1.mydata_bmi0821;
+set mydata_bmi4;
+if bmi1=3 then bmi2=2;
+else bmi2=bmi1;
+run;
+
+
+
+
